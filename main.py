@@ -3,6 +3,7 @@ from typing import List
 import requests
 import yaml
 from urllib.parse import urlparse
+import sys
 
 class FetchRequest:
     def __init__(self,headers={},method="GET",name='',url='',body={}):
@@ -70,15 +71,15 @@ def open_yaml_input_file(file_path: str) -> List[FetchRequest]:
 
             return compiled_requests
         except yaml.YAMLError as e:
-            print("Error with yaml file:",e)
+            print("Error with yaml input file:",e)
 
 #takes in fetch request object and returns True/False on whether it suceeded or not
 #True - UP
 #False - DOWN
 def make_request(data: FetchRequest)-> bool:
     response = requests.request(data.method, data.url, headers=data.headers, data=data.body)
-    print('latency:',response.elapsed.total_seconds() * 1000)
-    print('code:',response.status_code)
+
+    #status code needs to be between 200-299 and response latency needs to be less than 500ms 
     if response.status_code >= 200 and response.status_code <=299 and (response.elapsed.total_seconds() * 1000) < 500:
         return True
     return False
@@ -107,8 +108,12 @@ def loop_request_list(health_check_list: List[FetchRequest]):
     
 
 if __name__=="__main__":
+    args = sys.argv
+    if len(args) > 2:
+        print('Invalid yaml input file. Required to include path to yaml input file. Example: python main.py /path/to/input.yaml')
+    input_file = args[1]
     #TODO add user input for input yaml file
-    health_check_list = open_yaml_input_file("input.yaml")
+    health_check_list = open_yaml_input_file(input_file)
     if not health_check_list:
         print("Error parsing yaml input or yaml input is empty.")
     else:
