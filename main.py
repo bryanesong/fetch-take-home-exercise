@@ -95,10 +95,13 @@ def loop_request_list(health_check_list: List[FetchRequest]):
             if url_domain not in percentage_tracker:
                 percentage_tracker[url_domain] = (0,0)
 
+            up_count = percentage_tracker[url_domain][0]
+            total_iterations = percentage_tracker[url_domain][1]
+
             if result:
-                percentage_tracker[url_domain] = (percentage_tracker[url_domain][0]+1,percentage_tracker[url_domain][1]+1)
+                percentage_tracker[url_domain] = (up_count+1,total_iterations+1)
             else:
-                percentage_tracker[url_domain] = (percentage_tracker[url_domain][0],percentage_tracker[url_domain][1]+1)
+                percentage_tracker[url_domain] = (up_count,total_iterations+1)
 
         for url_domain,values in percentage_tracker.items():
             availability_percentage_calc = round(100 *(values[0] / values[1]))
