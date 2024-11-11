@@ -124,7 +124,9 @@ if __name__=="__main__":
 
 
 '''
-Edgecases:
+Potential Future improvements:
 - user wants to input multiple yaml files to monitor
-
+- write logging data to seperate more robust/reliable database
+- allow user to turn on/off monitoring for specific domain urls
+- create API to fetch logging results to output to a dashboard or other GUI
 '''
